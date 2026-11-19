@@ -26,7 +26,7 @@ class ExportEngine {
 • Distance around the Sun: ~${statsData.distanceAroundSunKm.toLocaleString()} km
 • Earth Rotations: ~${statsData.rotationDistanceKm.toLocaleString()} km
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-Calculated via ChronoAge Pro: Precision Age Calculator`;
+Calculated via fAge: Precision Age Calculator`;
     }
 
     /**

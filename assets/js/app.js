@@ -1,12 +1,12 @@
 /**
- * ChronoAge Pro - Main Application Orchestrator
+ * fAge - Main Application Orchestrator
  */
 document.addEventListener('DOMContentLoaded', () => {
     // Application State
     const state = {
         currentTab: 'calculator',
-        theme: localStorage.getItem('chrono_theme') || 'dark',
-        soundEnabled: localStorage.getItem('chrono_sound') !== 'false',
+        theme: localStorage.getItem('fage_theme') || 'dark',
+        soundEnabled: localStorage.getItem('fage_sound') !== 'false',
         liveTimer: null,
         lastCalculatedBirth: null,
         userName: '',
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function toggleTheme() {
         state.theme = state.theme === 'dark' ? 'light' : 'dark';
-        localStorage.setItem('chrono_theme', state.theme);
+        localStorage.setItem('fage_theme', state.theme);
         document.documentElement.setAttribute('data-theme', state.theme);
         updateThemeIcon();
         playSound('click');
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function toggleSound() {
         state.soundEnabled = !state.soundEnabled;
-        localStorage.setItem('chrono_sound', state.soundEnabled);
+        localStorage.setItem('fage_sound', state.soundEnabled);
         if (elements.soundToggleBtn) {
             elements.soundToggleBtn.innerHTML = state.soundEnabled ? '🔔 Sound ON' : '🔕 Sound OFF';
         }

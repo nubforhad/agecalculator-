@@ -1,8 +1,8 @@
-# ⏳ ChronoAge Pro - Ultimate Age & Cosmic Life Calculator
+# ⏳ fAge - Precision Age Calculator & Cosmic Life Chronicle
 
 A modern, high-precision, multi-feature Age Calculator and Life Chronicle web application. Built with vanilla modern JavaScript (ES6+), responsive CSS3 glassmorphism design, and an optional PHP backend REST API.
 
-![ChronoAge Pro Banner](https://raw.githubusercontent.com/nubforhad/agecalculator/main/assets/preview.png)
+![fAge Banner](https://raw.githubusercontent.com/nubforhad/agecalculator/main/assets/preview.png)
 
 ---
 
