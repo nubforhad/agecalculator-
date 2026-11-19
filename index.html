@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronoAge Pro | Precision Age Calculator & Life Chronicle</title>
+    <meta name="description" content="Calculate your exact age in years, months, days, hours, minutes, and seconds in real-time. Discover your Western & Chinese zodiac, next birthday countdown, planetary ages, life stats, and print an official Life Certificate.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Application Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏳</text></svg>">
+</head>
+<body>
+    <!-- Background Ambient Glow -->
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+
+    <!-- Canvas for Confetti -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- App Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo-group">
+                <div class="logo-icon">⏳</div>
+                <div class="logo-text">
+                    <h1>ChronoAge Pro</h1>
+                    <p>Precision Age Calculator & Cosmic Life Stats</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary btn-sm" id="soundToggleBtn" title="Toggle Sound">🔔 Sound ON</button>
+                <button class="btn btn-secondary btn-sm" id="themeToggleBtn" title="Toggle Theme">☀️ Light Mode</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="nav-tabs-wrapper">
+        <div class="nav-tabs">
+            <button class="nav-tab-btn active" data-tab="calculator"><span>🎯</span> Age Calculator</button>
+            <button class="nav-tab-btn" data-tab="difference"><span>⏱️</span> Date Difference</button>
+            <button class="nav-tab-btn" data-tab="compare"><span>👥</span> Compare Ages</button>
+            <button class="nav-tab-btn" data-tab="timemachine"><span>🚀</span> Time Machine & Milestones</button>
+            <button class="nav-tab-btn" data-tab="planets"><span>🪐</span> Planets & Pets</button>
+            <button class="nav-tab-btn" data-tab="profiles"><span>👤</span> Saved Profiles</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="main-content">
+
+        <!-- ================= TAB 1: MAIN AGE CALCULATOR ================= -->
+        <section id="tab-calculator" class="tab-panel active">
+            <!-- Input Form Card -->
+            <div class="glass-card">
+                <div class="card-header-flex">
+                    <h2 class="card-title"><span>🎂</span> Calculate Your Exact Age</h2>
+                    <div class="live-pill" id="liveBadge">
+                        <span class="live-dot"></span> Real-Time Ticking
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="userNameInput">Your Name (Optional)</label>
+                        <input type="text" id="userNameInput" class="input-control" placeholder="e.g. Alex Mercer">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthDateInput">Date of Birth *</label>
+                        <input type="date" id="birthDateInput" class="input-control" required value="2000-01-01">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthTimeInput">Time of Birth (Optional)</label>
+                        <input type="time" id="birthTimeInput" class="input-control" value="12:00">
+                    </div>
+                    <div class="form-group">
+                        <label for="targetDateInput">Age at Date (Target)</label>
+                        <div class="input-row">
+                            <input type="date" id="targetDateInput" class="input-control">
+                            <button type="button" class="btn btn-secondary btn-sm" id="todayPresetBtn" title="Set to Today">Today</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="targetTimeInput">Target Time</label>
+                        <input type="time" id="targetTimeInput" class="input-control">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="calculateBtn"><span>⚡</span> Calculate Age</button>
+                        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+                        <button class="btn btn-secondary" id="celebrateBtn"><span>🎉</span> Celebrate Birthday</button>
+                    </div>
+                    <label class="switch-group" title="Auto tick seconds live">
+                        <div class="switch">
+                            <input type="checkbox" id="liveTickToggle" checked>
+                            <span class="slider"></span>
+                        </div>
+                        <span>Live Second Ticker</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection">
+                <!-- Hero Age Display -->
+                <div class="glass-card">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3 class="card-title"><span>⏳</span> Your Precision Age Right Now</h3>
+                            <span class="badge badge-success" id="bornDayOfWeekBadge" style="margin-top: 0.35rem;">Born on a Saturday</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary btn-sm" id="shareSummaryBtn">📋 Copy Summary</button>
+                            <button class="btn btn-primary btn-sm" id="printCertBtn">📜 Official Certificate</button>
+                            <button class="btn btn-secondary btn-sm" id="saveProfileBtn">💾 Save Profile</button>
+                        </div>
+                    </div>
+
+                    <div class="age-hero-grid">
+                        <div class="age-tile">
+                            <span class="tile-number" id="yearsDisplay">0</span>
+                            <span class="tile-label">Years</span>
+                        </div>
+                        <div class="age-tile">
+                            <span class="tile-number" id="monthsDisplay">0</span>
+                            <span class="tile-label">Months</span>
+                        </div>
+                        <div class="age-tile">
+                            <span class="tile-number" id="daysDisplay">0</span>
+                            <span class="tile-label">Days</span>
+                        </div>
+                        <div class="age-tile">
+                            <span class="tile-number" id="hoursDisplay">00</span>
+                            <span class="tile-label">Hours</span>
+                        </div>
+                        <div class="age-tile">
+                            <span class="tile-number" id="minutesDisplay">00</span>
+                            <span class="tile-label">Minutes</span>
+                        </div>
+                        <div class="age-tile">
+                            <span class="tile-number" id="secondsDisplay">00</span>
+                            <span class="tile-label">Seconds</span>
+                        </div>
+                    </div>
+
+                    <!-- Cumulative Total Numbers -->
+                    <div class="totals-grid">
+                        <div class="total-item">
+                            <div class="item-label">Total Months</div>
+                            <div class="item-val" id="totalMonths">0</div>
+                        </div>
+                        <div class="total-item">
+                            <div class="item-label">Total Weeks</div>
+                            <div class="item-val" id="totalWeeks">0</div>
+                        </div>
+                        <div class="total-item">
+                            <div class="item-label">Total Days</div>
+                            <div class="item-val" id="totalDays">0</div>
+                        </div>
+                        <div class="total-item">
+                            <div class="item-label">Total Hours</div>
+                            <div class="item-val" id="totalHours">0</div>
+                        </div>
+                        <div class="total-item">
+                            <div class="item-label">Total Minutes</div>
+                            <div class="item-val" id="totalMinutes">0</div>
+                        </div>
+                        <div class="total-item">
+                            <div class="item-label">Total Seconds</div>
+                            <div class="item-val" id="totalSeconds">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Next Birthday & Half Birthday Dashboard -->
+                <div class="dashboard-grid">
+                    <div class="birthday-banner">
+                        <h3><span>🎂</span> Next Birthday Countdown</h3>
+                        <div class="countdown-flex">
+                            <div class="cd-box">
+                                <div class="cd-number" id="nextBdayDays">0</div>
+                                <div class="cd-label">Days</div>
+                            </div>
+                            <div class="cd-box">
+                                <div class="cd-number" id="nextBdayHours">00</div>
+                                <div class="cd-label">Hours</div>
+                            </div>
+                            <div class="cd-box">
+                                <div class="cd-number" id="nextBdayMinutes">00</div>
+                                <div class="cd-label">Minutes</div>
+                            </div>
+                            <div class="cd-box">
+                                <div class="cd-number" id="nextBdaySeconds">00</div>
+                                <div class="cd-label">Seconds</div>
+                            </div>
+                        </div>
+                        <p class="bday-meta">
+                            Date: <strong id="nextBdayDateText">--</strong> (<span id="nextBdayDayOfWeek">--</span>)<br>
+                            Milestone: <strong id="nextBdayTurningAge">Turning --</strong>
+                        </p>
+                    </div>
+
+                    <div class="birthday-banner" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%); border-color: rgba(16, 185, 129, 0.25);">
+                        <h3><span>🎈</span> Half-Birthday Celebration</h3>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.8rem; color: var(--text-secondary);">
+                            Your half-birthday marks exactly 6 calendar months from your birth date—a fun modern celebration!
+                        </p>
+                        <p class="bday-meta" style="margin-top: 1rem;">
+                            Next Half-Birthday: <strong id="halfBdayDateText">--</strong><br>
+                            Countdown: <strong id="halfBdayDaysText">in -- days</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Astrology, Generation & Cultural Profile -->
+                <div class="glass-card">
+                    <h3 class="card-title"><span>✨</span> Astrology, Heritage & Cosmic Signatures</h3>
+                    <div class="astrology-grid">
+                        <!-- Western Zodiac -->
+                        <div class="astro-card">
+                            <div class="astro-header">
+                                <div>
+                                    <span class="astro-tag" id="westernSignElement">Earth • Cardinal</span>
+                                    <h4 id="westernSignName">Capricorn</h4>
+                                </div>
+                                <div class="astro-symbol" id="westernSignSymbol">♑</div>
+                            </div>
+                            <p class="astro-traits" id="westernSignRuler">Ruler: Saturn</p>
+                            <p class="astro-traits" id="westernSignTraits">Disciplined, ambitious, and practical.</p>
+                        </div>
+
+                        <!-- Chinese Zodiac -->
+                        <div class="astro-card">
+                            <div class="astro-header">
+                                <div>
+                                    <span class="astro-tag">Chinese Zodiac</span>
+                                    <h4 id="chineseZodiacTitle">Yang Metal Dragon</h4>
+                                </div>
+                                <div class="astro-symbol" id="chineseZodiacEmoji">🐉</div>
+                            </div>
+                            <p class="astro-traits" id="chineseZodiacTraits">Charismatic, confident, and natural leaders.</p>
+                        </div>
+
+                        <!-- Generation -->
+                        <div class="astro-card">
+                            <div class="astro-header">
+                                <div>
+                                    <span class="astro-tag" id="generationEra">1997 - 2012</span>
+                                    <h4 id="generationName">Generation Z</h4>
+                                </div>
+                                <div class="astro-symbol">🌐</div>
+                            </div>
+                            <p class="astro-traits" id="generationDesc">Digital natives passionate about technology, authenticity, and design.</p>
+                        </div>
+
+                        <!-- Birth Gemstone & Flower -->
+                        <div class="astro-card">
+                            <div class="astro-header">
+                                <div>
+                                    <span class="astro-tag">Birthstone & Flower</span>
+                                    <h4 id="birthstoneName">Garnet</h4>
+                                </div>
+                                <div class="astro-symbol">💎</div>
+                            </div>
+                            <p class="astro-traits" id="birthstoneMeaning">Symbolizes loyalty, constancy, and protection.</p>
+                            <p class="astro-traits" style="margin-top: 0.35rem;"><strong id="birthFlowerName">Carnation</strong>: <span id="birthFlowerMeaning">Devotion and fascination.</span></p>
+                        </div>
+
+                        <!-- Moon Phase at Birth -->
+                        <div class="astro-card">
+                            <div class="astro-header">
+                                <div>
+                                    <span class="astro-tag">Natal Moon Phase</span>
+                                    <h4 id="moonPhaseName">Waxing Crescent</h4>
+                                </div>
+                                <div class="astro-symbol" id="moonPhaseEmoji">🌒</div>
+                            </div>
+                            <p class="astro-traits" id="moonPhaseDesc">Growth, momentum, and developing intuition.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Life & Biological Journey Stats -->
+                <div class="glass-card">
+                    <h3 class="card-title"><span>🧬</span> Your Life Journey in Numbers</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        Scientific biological and cosmic estimates based on your exact days on Earth:
+                    </p>
+                    <div class="life-stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-icon">❤️</div>
+                            <div class="stat-number" id="statHeartbeats">0</div>
+                            <div class="stat-sub">Heartbeats pumped (at ~78 bpm)</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon">🫁</div>
+                            <div class="stat-number" id="statBreaths">0</div>
+                            <div class="stat-sub">Breaths taken (at ~16 bpm)</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon">🛌</div>
+                            <div class="stat-number" id="statSleepHours">0</div>
+                            <div class="stat-sub">Hours spent sleeping & dreaming</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon">🍽️</div>
+                            <div class="stat-number" id="statMeals">0</div>
+                            <div class="stat-sub">Meals eaten & water consumed</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon">👁️</div>
+                            <div class="stat-number" id="statBlinks">0</div>
+                            <div class="stat-sub">Times blinked while awake</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon">☀️</div>
+                            <div class="stat-number" id="statSunKm">0 km</div>
+                            <div class="stat-sub" id="statSunMiles">Traveled around the Sun</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon">🌍</div>
+                            <div class="stat-number" id="statEarthRotKm">0 km</div>
+                            <div class="stat-sub">Earth axial rotation distance</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon">😄</div>
+                            <div class="stat-number" id="statLaughs">0</div>
+                            <div class="stat-sub">Chuckles & genuine laughs</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon">💇</div>
+                            <div class="stat-number" id="statHairGrowth">0 cm</div>
+                            <div class="stat-sub">Hair and fingernail growth</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State / Fallback -->
+            <div id="emptyStateSection" style="display: none; text-align: center; padding: 4rem 1rem;">
+                <div style="font-size: 3.5rem; margin-bottom: 1rem;">📅</div>
+                <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;">Select your birth date above</h3>
+                <p style="color: var(--text-secondary); max-width: 480px; margin: 0 auto;">
+                    Enter your birth date and click <strong>Calculate Age</strong> to view your exact age breakdown, real-time seconds ticking, astrology, and life statistics.
+                </p>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: DATE DIFFERENCE ================= -->
+        <section id="tab-difference" class="tab-panel">
+            <div class="glass-card">
+                <div class="card-header-flex">
+                    <h2 class="card-title"><span>⏱️</span> Date Difference & Duration Calculator</h2>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Calculate the exact span between any two dates and times with granular precision.
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="diffStartDate">Start Date</label>
+                        <input type="date" id="diffStartDate" class="input-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="diffStartTime">Start Time</label>
+                        <input type="time" id="diffStartTime" class="input-control" value="00:00">
+                    </div>
+                    <div class="form-group">
+                        <label for="diffEndDate">End Date</label>
+                        <input type="date" id="diffEndDate" class="input-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="diffEndTime">End Time</label>
+                        <input type="time" id="diffEndTime" class="input-control" value="00:00">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" id="diffCalcBtn">Calculate Duration</button>
+                </div>
+
+                <div id="diffResultContainer" style="margin-top: 1.5rem;"></div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: AGE COMPARISON ================= -->
+        <section id="tab-compare" class="tab-panel">
+            <div class="glass-card">
+                <div class="card-header-flex">
+                    <h2 class="card-title"><span>👥</span> Age Comparison Tool</h2>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Compare two individuals to find out who is older, the exact age gap, and shared milestones.
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="compNameA">Person 1 Name</label>
+                        <input type="text" id="compNameA" class="input-control" value="Person 1">
+                    </div>
+                    <div class="form-group">
+                        <label for="compDateA">Person 1 Birth Date</label>
+                        <input type="date" id="compDateA" class="input-control" value="1995-05-15">
+                    </div>
+                    <div class="form-group">
+                        <label for="compNameB">Person 2 Name</label>
+                        <input type="text" id="compNameB" class="input-control" value="Person 2">
+                    </div>
+                    <div class="form-group">
+                        <label for="compDateB">Person 2 Birth Date</label>
+                        <input type="date" id="compDateB" class="input-control" value="1998-09-22">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" id="compCalcBtn">Compare Both Individuals</button>
+                </div>
+
+                <div id="compResultContainer" style="margin-top: 1.5rem;"></div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: TIME MACHINE & MILESTONES ================= -->
+        <section id="tab-timemachine" class="tab-panel">
+            <div class="glass-card">
+                <div class="card-header-flex">
+                    <h2 class="card-title"><span>🚀</span> Future Age Planner & Time Machine</h2>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Discover how old you will be on any future date (e.g. Retirement, Year 2050, Mars Landing).
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="tmBirthDate">Your Birth Date</label>
+                        <input type="date" id="tmBirthDate" class="input-control" value="2000-01-01">
+                    </div>
+                    <div class="form-group">
+                        <label for="tmTargetDate">Future / Past Date</label>
+                        <input type="date" id="tmTargetDate" class="input-control" value="2050-01-01">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" id="tmFutureCalcBtn">Calculate Future Age</button>
+                </div>
+
+                <div id="tmFutureResult" style="margin-top: 1.5rem;"></div>
+            </div>
+
+            <!-- Major Life Milestones Table -->
+            <div class="glass-card">
+                <h3 class="card-title"><span>👑</span> The Legendary Life Milestones & 10,000-Day Club</h3>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">
+                    Exact dates when you unlock historic milestones on Earth:
+                </p>
+                <div class="milestones-list" id="tmMilestonesList">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 5: PLANETS & PET AGES ================= -->
+        <section id="tab-planets" class="tab-panel">
+            <div class="glass-card">
+                <h2 class="card-title"><span>🪐</span> Your Age on Other Planets</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    Because each planet has a different orbital period around the Sun, your age changes drastically across the Solar System:
+                </p>
+                <div class="planets-grid" id="planetsGrid">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2 class="card-title"><span>🐾</span> Pet Age Equivalents (Scientific Biological Age)</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    If you were a pet, how old would you be in pet biological equivalent years?
+                </p>
+                <div class="pets-grid" id="petsGrid">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 6: SAVED PROFILES ================= -->
+        <section id="tab-profiles" class="tab-panel">
+            <div class="glass-card">
+                <div class="card-header-flex">
+                    <h2 class="card-title"><span>👤</span> Saved Family & Friends Profiles</h2>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Save important birthdays locally on your device to load them anytime with one click.
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="newProfileName">Full Name</label>
+                        <input type="text" id="newProfileName" class="input-control" placeholder="e.g. Sarah Connor">
+                    </div>
+                    <div class="form-group">
+                        <label for="newProfileDate">Birth Date</label>
+                        <input type="date" id="newProfileDate" class="input-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="newProfileTime">Birth Time</label>
+                        <input type="time" id="newProfileTime" class="input-control" value="00:00">
+                    </div>
+                    <div class="form-group">
+                        <label for="newProfileNote">Relationship / Note</label>
+                        <input type="text" id="newProfileNote" class="input-control" placeholder="e.g. Sister, Best Friend">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" id="addProfileBtn">Add New Profile</button>
+                </div>
+
+                <div class="profiles-grid" id="profilesList" style="margin-top: 1.5rem;">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= MODAL: OFFICIAL CERTIFICATE OF LIFE ================= -->
+    <div class="modal-backdrop" id="certificateModal">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="closeCertModalBtn" title="Close">&times;</button>
+            <div class="certificate-frame">
+                <div class="cert-badge">🏅</div>
+                <div class="cert-header">
+                    <h2>Certificate of Life Record</h2>
+                    <p class="cert-sub">Official Registry of Time & Planetary Journey</p>
+                </div>
+
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">This chronicle certifies that</p>
+                <div class="cert-name" id="certName">Alex Mercer</div>
+
+                <div class="cert-details-grid">
+                    <div class="cert-detail-item">
+                        <span class="label">Born On</span>
+                        <span class="val" id="certBirthDate">Saturday, January 1, 2000</span>
+                    </div>
+                    <div class="cert-detail-item">
+                        <span class="label">Day of Week</span>
+                        <span class="val" id="certBornDay">Saturday</span>
+                    </div>
+                    <div class="cert-detail-item">
+                        <span class="label">Chronological Age</span>
+                        <span class="val" id="certExactAge">26 Years, 10 Months, 18 Days</span>
+                    </div>
+                    <div class="cert-detail-item">
+                        <span class="label">Earth Days Lived</span>
+                        <span class="val" id="certTotalDays">9,819 Days</span>
+                    </div>
+                    <div class="cert-detail-item">
+                        <span class="label">Western Sign</span>
+                        <span class="val" id="certZodiac">♑ Capricorn (Earth)</span>
+                    </div>
+                    <div class="cert-detail-item">
+                        <span class="label">Generation</span>
+                        <span class="val" id="certGen">Generation Z (1997 - 2012)</span>
+                    </div>
+                </div>
+
+                <div class="cert-footer">
+                    <div>
+                        <strong>ChronoAge Pro Registry</strong><br>
+                        <span>Verified Gregorian Calendar Math</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <strong>Date Certified</strong><br>
+                        <span id="certDateIssued">November 19, 2026</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="document.getElementById('certificateModal').classList.remove('show')">Close</button>
+                <button class="btn btn-primary" id="certPrintBtn">🖨️ Print / Save as PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="toast-notice">Action successful!</div>
+
+    <!-- Application Engine Scripts -->
+    <script src="assets/js/age-engine.js"></script>
+    <script src="assets/js/astrology.js"></script>
+    <script src="assets/js/life-stats.js"></script>
+    <script src="assets/js/milestones.js"></script>
+    <script src="assets/js/profiles.js"></script>
+    <script src="assets/js/export.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
