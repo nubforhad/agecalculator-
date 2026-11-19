@@ -2,7 +2,7 @@
 
 A modern, high-precision, multi-feature Age Calculator and Life Chronicle web application. Built with vanilla modern JavaScript (ES6+), responsive CSS3 glassmorphism design, and an optional PHP backend REST API.
 
-![fAge Banner](https://raw.githubusercontent.com/nubforhad/agecalculator/main/assets/preview.png)
+![fAge Banner](https://raw.githubusercontent.com/nubforhad/agecalculator-/main/assets/preview.png)
 
 ---
 
